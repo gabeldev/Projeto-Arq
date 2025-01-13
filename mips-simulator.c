@@ -446,6 +446,42 @@ void executeInstruction(int pc) {
 
         registers[rt] = immediate << 16;
     }
+
+    // slt
+    if(strcmp(instruction->operands, "slt")) {
+        int rd = getRegisterNumber(instruction->operands[0]);
+        int rs = getRegisterNumber(instruction->operands[1]);
+        int rt = getRegisterNumber(instruction->operands[2]);
+
+        if(rd == -1 && rs == -1 && rt == -1) {
+            printf("Erro: Nome de registrador inválido");
+            return;
+        }
+
+        if(rd == 0) {
+            printf("Erro: Não pode-se modificar o registrador $zero");
+        }
+
+        registers[rd] = registers[rs] < registers[rt] ? 1 : 0;
+    }
+
+    // slti
+    if(strcmp(instruction->operands, "slt")) {
+        int rd = getRegisterNumber(instruction->operands[0]);
+        int rs = getRegisterNumber(instruction->operands[1]);
+        int immediate = atoi(instruction->operands[2]);
+
+        if(rd == -1 && rs == -1) {
+            printf("Erro: Nome de registrador inválido");
+            return;
+        }
+
+        if(rd == 0) {
+            printf("Erro: Não pode-se modificar o registrador $zero");
+        }
+
+        registers[rd] = registers[rs] < immediate ? 1 : 0;
+    }
 }
 
 
