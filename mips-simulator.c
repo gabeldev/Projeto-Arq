@@ -3,7 +3,6 @@
 #include <string.h>
 #include <ctype.h>
 
-
 #define NUM_REGISTERS 32
 #define MEMORY_SIZE 4096
 #define MAX_INSTRUCTIONS 100
@@ -72,32 +71,94 @@ int InstructionToBinary(INSTRUCTION *inst) {
     if(strcmp(inst->opcode, "add") == 0) {
         return 0x00000020;
     }
+    else if(strcmp(inst->opcode, "addi") == 0) {
+        return 0x20000000;
+    }
+    else if(strcmp(inst->opcode, "sub") == 0) {
+        return 0x00000022;
+    }
+    else if(strcmp(inst->opcode, "mult") == 0) {
+        return 0x00000018;
+    }
+    else if(strcmp(inst->opcode, "and") == 0) {
+        return 0x00000024;
+    }
+    else if(strcmp(inst->opcode, "or") == 0) {
+        return 0x00000025;
+    }
+    else if(strcmp(inst->opcode, "sll") == 0) {
+        return 0x00000000;
+    }
+    else if(strcmp(inst->opcode, "syscall") == 0) {
+        return 0x0000000c;
+    }
+    else if(strcmp(inst->opcode, "lw") == 0) {
+        return 0x8c000000;
+    }
+    else if(strcmp(inst->opcode, "sw") == 0) {
+        return 0xac000000;
+    }
+    else if(strcmp(inst->opcode, "lui") == 0) {
+        return 0x3c000000;
+    }
+    else if(strcmp(inst->opcode, "li") == 0) {
+        return 0x24000000;
+    }
+    else if(strcmp(inst->opcode, "la") == 0) {
+        return 0x3c000000;
+    }
 
-    // Adicionar
-
-    return 0;
+    return 0; 
 }
 
 int getBinary(char *instruction_name) {
     if(strcmp(instruction_name, "add") == 0) {
         return 0x00000020;
     }
+    else if(strcmp(instruction_name, "addi") == 0) {
+        return 0x20000000;
+    }
+    else if(strcmp(instruction_name, "sub") == 0) {
+        return 0x00000022;
+    }
+    else if(strcmp(instruction_name, "mult") == 0) {
+        return 0x00000018;
+    }
+    else if(strcmp(instruction_name, "and") == 0) {
+        return 0x00000024;
+    }
+    else if(strcmp(instruction_name, "or") == 0) {
+        return 0x00000025;
+    }
+    else if(strcmp(instruction_name, "sll") == 0) {
+        return 0x00000000;
+    }
+    else if(strcmp(instruction_name, "syscall") == 0) {
+        return 0x0000000c;
+    }
+    else if(strcmp(instruction_name, "lw") == 0) {
+        return 0x8c000000;
+    }
+    else if(strcmp(instruction_name, "sw") == 0) {
+        return 0xac000000;
+    }
+    else if(strcmp(instruction_name, "lui") == 0) {
+        return 0x3c000000;
+    }
+    else if(strcmp(instruction_name, "li") == 0) {
+        return 0x24000000;
+    }
+    else if(strcmp(instruction_name, "la") == 0) {
+        return 0x3c000000;
+    }
     return 0;
 }
 
 void displayInstruction(int pc) {
     instructions[pc].binary = getBinary(instructions[pc].opcode);
-    if(pc < instruction_count) {
-        printf("\n=== Instrução Atual (%d) === \n", pc);
-        printf("Assembly: %s %s", instructions[pc].opcode, instructions[pc].operands[0]);
-        if(strlen(instructions[pc].operands[1]) > 0) {
-            printf(", %s", instructions[pc].operands[1]);
-        }
-        if(strlen(instructions[pc].operands[2]) > 0) {
-            printf(", %s", instructions[pc].operands[2]);
-        }
-        printf("\nBinário: %032b\n", instructions[pc].binary);
-    }
+    printf("\n=== Instrução ===\n");
+    printf("Instrução: %s %s %s %s\n", instructions[pc].opcode, instructions[pc].operands[0], instructions[pc].operands[1], instructions[pc].operands[2]);
+    printf("Instrução em binário: %08x\n", instructions[pc].binary);
 }
 
 void displayRegisters() {
@@ -446,42 +507,6 @@ void executeInstruction(int pc) {
 
         registers[rt] = immediate << 16;
     }
-
-    // slt
-    if(strcmp(instruction->operands, "slt")) {
-        int rd = getRegisterNumber(instruction->operands[0]);
-        int rs = getRegisterNumber(instruction->operands[1]);
-        int rt = getRegisterNumber(instruction->operands[2]);
-
-        if(rd == -1 && rs == -1 && rt == -1) {
-            printf("Erro: Nome de registrador inválido");
-            return;
-        }
-
-        if(rd == 0) {
-            printf("Erro: Não pode-se modificar o registrador $zero");
-        }
-
-        registers[rd] = registers[rs] < registers[rt] ? 1 : 0;
-    }
-
-    // slti
-    if(strcmp(instruction->operands, "slt")) {
-        int rd = getRegisterNumber(instruction->operands[0]);
-        int rs = getRegisterNumber(instruction->operands[1]);
-        int immediate = atoi(instruction->operands[2]);
-
-        if(rd == -1 && rs == -1) {
-            printf("Erro: Nome de registrador inválido");
-            return;
-        }
-
-        if(rd == 0) {
-            printf("Erro: Não pode-se modificar o registrador $zero");
-        }
-
-        registers[rd] = registers[rs] < immediate ? 1 : 0;
-    }
 }
 
 
@@ -632,6 +657,7 @@ int main(int argc, char *argv[]) {
     loadProgram(argv[1]);
 
     runSimulator();
+    
 
     return EXIT_SUCCESS;
 }
